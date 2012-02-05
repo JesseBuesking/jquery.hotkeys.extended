@@ -1,9 +1,9 @@
 #About
-**jQuery Hotkeys** is a plug-in that lets you easily add and remove handlers for keyboard events anywhere in your code supporting almost any key combination.  
+**jQuery Hotkeys Extended** is a plug-in that lets you easily add and remove handlers for keyboard events anywhere in your code supporting almost any key combination.  
 
-This plugin is based off of the plugin by Tzury Bar Yochay: [jQuery.hotkeys](http://github.com/tzuryby/hotkeys)
+This plugin is based off of the plugin by John Resig: [jquery.hotkeys](https://github.com/jeresig/jquery.hotkeys) which is based off of the plugin by Tzury Bar Yochay: [jQuery.hotkeys](http://github.com/tzuryby/hotkeys)
 
-The syntax is as follows:
+The original plugin's syntax is as follows (and still works):
 
     $(expression).bind(types, keys, handler);
     $(expression).unbind(types, handler);
@@ -14,6 +14,66 @@ The syntax is as follows:
     $('input.foo').bind('keyup', '$', function(){
       this.value = this.value.replace('$', 'EUR');
     });
+    
+## Multi-key combinations supported
+
+jQuery Hotkeys Extended now supports multi-key combinations!
+
+The syntax for using multi-key combinations is as follows:
+
+    $(expression).hotkeys('g', 'h', function ()
+    {
+        // pressing 'g' followed by 'h' 
+        // will call this code to go home
+        window.location = '/';
+    });
+    
+You can still combine keys like before...
+
+    $(expression).hotkeys('pagedown right', function ()
+    {
+        // pressing 'pagedown' OR pressing 
+        // the 'right' arrow will call this 
+        // code to go to the next page
+        window.location = '/next';
+    });
+    
+... and you can also mix and match with the new syntax
+
+    $(expression).hotkeys('g j', 'h', function ()
+    {
+        // pressing 'g' followed by 'h' OR
+        // pressing 'j' followed by 'h' will
+        // call this code to go home
+        window.location = '/';
+    });
+    
+###Note:
+    
+All calls using the new `.hotkeys` syntax are performed for the `keydown` event by default, however this behavior can be modified:
+
+    $(expression).hotkeys({
+        keyEvent: 'keyup'
+    });
+
+Also by default, all key events return false to prevent propagation.  This can also be modified:
+
+    $(expression).hotkeys({
+        returnFalse: false
+    });
+    
+Modification to keyEvent and/or returnFalse will be applied to all succeeding calls to `.hotkeys`.
+
+Here's a more complicated example showing most of the new syntax off:
+
+    $(document)
+        .hotkeys('g', 'h', function () { window.location = '/'; })
+        .hotkeys('g', 'l', function () { window.location = '/login'; })
+        .hotkeys({
+            keyEvent: 'keypress',
+            returnFalse: false
+        })
+        .hotkeys('shift+/', function () { openWindow(); });
 
 ## Types
 Supported types are `'keydown'`, `'keyup'` and `'keypress'`
